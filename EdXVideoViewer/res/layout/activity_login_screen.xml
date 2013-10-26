@@ -18,6 +18,7 @@
         android:hint="Username" />
     
     <EditText
+        android:id="@+id/password_field"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingLeft="10dip"
@@ -25,5 +26,49 @@
         android:inputType="textPassword"
         android:hint="Password"
         android:layout_below="@id/username_field" />
+    
+    <CheckBox 
+        android:id="@+id/remember_field"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/password_field"
+        android:layout_alignParentLeft="true" />
+    
+    <Button
+        android:id="@+id/add_data_button"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_toRightOf="@id/remember_field"
+        android:layout_below="@id/password_field"
+        android:text="Add data" />
+    
+    <LinearLayout
+        android:id="@+id/button_container"
+        android:layout_below="@id/add_data_button"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:orientation="horizontal" >
+        
+        <Button
+            android:id="@+id/send_data_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Send data" />
+
+        <Button
+            android:id="@+id/continue_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Continue" />
+    
+    </LinearLayout>
+    
+    <WebView
+        android:id="@+id/login_web_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/button_container" />
 
 </RelativeLayout>
