@@ -92,8 +92,8 @@ public class LoginScreen extends Activity {
 				CookieManager mgr = CookieManager.getInstance();
 				String cookies = mgr.getCookie("courses.edx.org");
 				cookieData = cookies;
-				Pattern edxLoggedInPattern = Pattern.compile("edxloggedin=(.+);");
-				Pattern sessionIdPattern = Pattern.compile("sessionid=(.+);");
+				Pattern edxLoggedInPattern = Pattern.compile("edxloggedin=([^;]+);");
+				Pattern sessionIdPattern = Pattern.compile("sessionid=([^;]+);");
 				Matcher edxLoggedInMatcher = edxLoggedInPattern.matcher(cookies);
 				Matcher sessionIdMatcher = sessionIdPattern.matcher(cookies);
 				if(edxLoggedInMatcher.find()) {
