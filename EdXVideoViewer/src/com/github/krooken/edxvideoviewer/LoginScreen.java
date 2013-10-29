@@ -6,6 +6,7 @@ import java.util.regex.Pattern;
 import android.os.Bundle;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Intent;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
@@ -27,6 +28,7 @@ public class LoginScreen extends Activity {
 	private WebView loginWebView;
 	private String userName;
 	private String password;
+	private String cookieData = "";
 	private boolean remember;
 
 	private boolean dataAdded = false;
@@ -89,6 +91,7 @@ public class LoginScreen extends Activity {
 				
 				CookieManager mgr = CookieManager.getInstance();
 				String cookies = mgr.getCookie("courses.edx.org");
+				cookieData = cookies;
 				Pattern edxLoggedInPattern = Pattern.compile("edxloggedin=(.+);");
 				Pattern sessionIdPattern = Pattern.compile("sessionid=(.+);");
 				Matcher edxLoggedInMatcher = edxLoggedInPattern.matcher(cookies);
@@ -143,6 +146,11 @@ public class LoginScreen extends Activity {
 			@Override
 			public void onClick(View v) {
 				//TODO: Start new activity
+				if(loggedIn) {
+					Intent intent = new Intent(LoginScreen.this, CourseViewer.class);
+					intent.putExtra("cookie_data", cookieData);
+					startActivity(intent);
+				}
 			}
 		});
 	}
