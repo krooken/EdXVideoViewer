@@ -2,6 +2,8 @@ package com.github.krooken.edxvideoviewer;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -46,6 +48,12 @@ public class CourseViewer extends Activity {
 					public void run() {
 						// TODO Auto-generated method stub
 						Log.d(TAG, response);
+						Pattern pattern = Pattern.compile("<h3>\\s*<a href=\"([^<\"]+)\">([^<]+)</a>\\s*</h3>");
+						Matcher matcher = pattern.matcher(response);
+						while(matcher.find()) {
+							Log.d(TAG, matcher.group(1));
+							Log.d(TAG,  matcher.group(2));
+						}
 					}
 				});
 			}
