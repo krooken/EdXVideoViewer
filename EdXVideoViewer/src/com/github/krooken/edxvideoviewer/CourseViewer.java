@@ -11,6 +11,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -67,6 +71,16 @@ public class CourseViewer extends Activity {
 						}
 						ListView listView = (ListView)findViewById(R.id.courses_list_view);
 						listView.setAdapter(adapter);
+						listView.setOnItemClickListener(new OnItemClickListener() {
+
+							@Override
+							public void onItemClick(AdapterView<?> parent,
+									View v, int position, long id) {
+								// TODO Auto-generated method stub
+								Log.d(TAG, "Adapter: position: " + position + " id: " + id);
+								Log.d(TAG, "Selected address: " + courseAddresses.get(position));
+							}
+						});
 					}
 				});
 			}
