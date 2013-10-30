@@ -24,6 +24,7 @@ public class CourseViewer extends Activity {
 	
 	private ArrayAdapter<String> adapter;
 	private LinkedList<String> courseAddresses = new LinkedList<String>();
+	private String cookieData;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +34,7 @@ public class CourseViewer extends Activity {
 		adapter = new ArrayAdapter<String>(this, R.layout.course_viewer_item);
 		
 		Intent intent = getIntent();
-		String cookieData = intent.getCharSequenceExtra("cookie_data").toString();
+		cookieData = intent.getCharSequenceExtra("cookie_data").toString();
 		HttpGetRequest getRequest = null;
 		try {
 			getRequest = new HttpGetRequest(new URI("https://courses.edx.org/dashboard"));
@@ -79,6 +80,10 @@ public class CourseViewer extends Activity {
 								// TODO Auto-generated method stub
 								Log.d(TAG, "Adapter: position: " + position + " id: " + id);
 								Log.d(TAG, "Selected address: " + courseAddresses.get(position));
+								Intent intent = new Intent(CourseViewer.this, null);
+								intent.putExtra("cookie_data", cookieData);
+								intent.putExtra("course_info_address", courseAddresses.get(position));
+								//startActivity(intent);
 							}
 						});
 					}
