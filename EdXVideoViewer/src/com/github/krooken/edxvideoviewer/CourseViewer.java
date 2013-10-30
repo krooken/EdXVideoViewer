@@ -2,6 +2,7 @@ package com.github.krooken.edxvideoviewer;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.LinkedList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -10,14 +11,22 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 public class CourseViewer extends Activity {
 	
-	static String TAG = "CourseViewer";
+	private static final String TAG = "CourseViewer";
+	
+	private ArrayAdapter<String> adapter;
+	private LinkedList<String> courseAddresses = new LinkedList<String>();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		setContentView(R.layout.course_viewer_screen);
+		
+		adapter = new ArrayAdapter<String>(this, R.layout.course_viewer_item);
 		
 		Intent intent = getIntent();
 		String cookieData = intent.getCharSequenceExtra("cookie_data").toString();
@@ -53,7 +62,11 @@ public class CourseViewer extends Activity {
 						while(matcher.find()) {
 							Log.d(TAG, matcher.group(1));
 							Log.d(TAG,  matcher.group(2));
+							adapter.add(matcher.group(1) + "\n" + matcher.group(2));
+							courseAddresses.add(matcher.group(2));
 						}
+						ListView listView = (ListView)findViewById(R.id.courses_list_view);
+						listView.setAdapter(adapter);
 					}
 				});
 			}
