@@ -9,6 +9,8 @@ import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.net.URI;
+
+import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
@@ -19,6 +21,8 @@ public class HttpGetRequest {
 	
 	private URI getRequestUri;
 	private String cookieHeader = "";
+	private Header[] responseHeaders;
+	private String responseContent;
 
 	public HttpGetRequest(URI uri) {
 		getRequestUri = uri;
@@ -43,6 +47,10 @@ public class HttpGetRequest {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
+
+		if(response != null) {
+			responseHeaders = response.getAllHeaders();
 		}
 		
 		InputStream responseStream = null;
@@ -80,10 +88,29 @@ public class HttpGetRequest {
 					e.printStackTrace();
 				}
 			}
-			return writer.toString();
+			responseContent = writer.toString();
 		}
 		else {
-			return "";
+			responseContent = "";
 		}
+		
+		if(response != null) {
+			try {
+				response.getEntity().consumeContent();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		return responseContent;
+	}
+	
+	public Header[] getResponseHeaders() {
+		return responseHeaders;
+	}
+	
+	public String getResponseContent() {
+		return responseContent;
 	}
 }
