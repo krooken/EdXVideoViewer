@@ -32,7 +32,7 @@ public class CoursewareContentViewer extends Activity {
 		courseAddress = courseAddress.replace("/info", "/courseware");
 		HttpGetRequest getRequest = null;
 		try {
-			getRequest = new HttpGetRequest(new URI("https://courses.edx.org/" + courseAddress));
+			getRequest = new HttpGetRequest(new URI("https://courses.edx.org" + courseAddress));
 		} catch (URISyntaxException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
