@@ -79,10 +79,10 @@ public class CourseViewer extends Activity {
 								// TODO Auto-generated method stub
 								Log.d(TAG, "Adapter: position: " + position + " id: " + id);
 								Log.d(TAG, "Selected address: " + courseAddresses.get(position));
-								Intent intent = new Intent(CourseViewer.this, null);
+								Intent intent = new Intent(CourseViewer.this, CoursewareContentViewer.class);
 								intent.putExtra("cookie_data", cookieData);
 								intent.putExtra("course_info_address", courseAddresses.get(position));
-								//startActivity(intent);
+								startActivity(intent);
 							}
 						});
 					}
