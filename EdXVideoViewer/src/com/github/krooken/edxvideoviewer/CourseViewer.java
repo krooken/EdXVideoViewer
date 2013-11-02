@@ -60,7 +60,7 @@ public class CourseViewer extends Activity {
 					@Override
 					public void run() {
 						// TODO Auto-generated method stub
-						Log.d(TAG, response);
+						// Log.d(TAG, response);
 						Pattern pattern = Pattern.compile("<h3>\\s*<a href=\"([^<\"]+)\">([^<]+)</a>\\s*</h3>");
 						Matcher matcher = pattern.matcher(response);
 						while(matcher.find()) {
