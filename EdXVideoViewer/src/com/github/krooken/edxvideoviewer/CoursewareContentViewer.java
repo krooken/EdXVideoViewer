@@ -21,6 +21,7 @@ public class CoursewareContentViewer extends Activity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
 		setContentView(R.layout.course_viewer_screen);
 
 		adapter = new ArrayAdapter<String>(this, R.layout.course_viewer_item);
