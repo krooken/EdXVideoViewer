@@ -49,12 +49,9 @@ public class CoursewareContentViewer extends Activity {
 			public void run() {
 				// TODO Auto-generated method stub
 				HttpGetRequest getRequest = request;
-				request.executeGetRequest();
-				Header[] responseHeaders = request.getResponseHeaders();
-				for(int i=0; i<responseHeaders.length; i++) {
-					Log.d(TAG, "Header name: " + responseHeaders[i].getName() + 
-							" value: " + responseHeaders[i].getValue());
-				}
+				String responseText = request.executeGetRequest();
+				
+				Log.d(TAG, "Content: " + responseText);
 			}
 		});
 		

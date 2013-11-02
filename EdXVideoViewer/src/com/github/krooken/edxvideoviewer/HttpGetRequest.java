@@ -56,6 +56,10 @@ public class HttpGetRequest {
 
 		if(response != null) {
 			responseHeaders = response.getAllHeaders();
+			for(int i=0; i<responseHeaders.length; i++) {
+				Log.d(TAG, "Header name: " + responseHeaders[i].getName() + 
+						" value: " + responseHeaders[i].getValue());
+			}
 		}
 		
 		InputStream responseStream = null;
