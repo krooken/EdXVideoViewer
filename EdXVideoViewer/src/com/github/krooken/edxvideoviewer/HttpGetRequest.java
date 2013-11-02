@@ -17,8 +17,11 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 
+import android.util.Log;
+
 public class HttpGetRequest {
 	
+	private static final String TAG = "HttpGetRequest";
 	private URI getRequestUri;
 	private String cookieHeader = "";
 	private Header[] responseHeaders;
@@ -34,6 +37,8 @@ public class HttpGetRequest {
 	}
 	
 	public String executeGetRequest() {
+		Log.d(TAG, "Requesting " + getRequestUri.toString());
+		
 		HttpResponse response = null;
 		try {        
 			HttpClient client = new DefaultHttpClient();
