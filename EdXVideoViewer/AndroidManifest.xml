@@ -29,6 +29,9 @@
         <activity 
             android:name="com.github.krooken.edxvideoviewer.CourseViewer"
             android:label="@string/app_name" />
+        <activity
+            android:name="com.github.krooken.edxvideoviewer.CoursewareContentViewer"
+            android:label="@string/app_name" />
     </application>
 
 </manifest>
