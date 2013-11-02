@@ -29,7 +29,7 @@ public class CoursewareContentViewer extends Activity {
 		Intent intent = getIntent();
 		cookieData = intent.getCharSequenceExtra("cookie_data").toString();
 		String courseAddress = intent.getCharSequenceExtra("course_info_address").toString();
-		courseAddress = courseAddress.replace("/info", "/coursware");
+		courseAddress = courseAddress.replace("/info", "/courseware");
 		HttpGetRequest getRequest = null;
 		try {
 			getRequest = new HttpGetRequest(new URI("https://courses.edx.org/" + courseAddress));
