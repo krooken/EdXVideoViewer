@@ -82,11 +82,18 @@ public class CoursewareContentViewer extends Activity {
 					while(xpp.next() != XmlPullParser.END_DOCUMENT) {
 						if(xpp.getEventType() == XmlPullParser.START_TAG) {
 							if(xpp.getName().equals("div")) {
-								if(xpp.getAttributeValue(null, "class").equals("chapter")) {
-									while(xpp.getEventType() != XmlPullParser.TEXT) {
+								Log.d(TAG, xpp.getName());
+								Log.d(TAG, "" + xpp.getAttributeCount());
+								for(int i=0; i<xpp.getAttributeCount(); i++) {
+									Log.d(TAG, xpp.getAttributeName(i));
+									Log.d(TAG, xpp.getAttributeValue(i));
+								}
+								String attributeClassValue = xpp.getAttributeValue(null, "class");
+								if(attributeClassValue != null && attributeClassValue.equals("chapter")) {
+									while(xpp.getEventType() != XmlPullParser.TEXT || xpp.isWhitespace()) {
 										xpp.next();
 									}
-									Log.d(TAG, xpp.getText());
+									Log.d(TAG, xpp.getText().trim());
 								}
 							}
 						}
