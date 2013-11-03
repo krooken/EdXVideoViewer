@@ -2,6 +2,8 @@ package com.github.krooken.edxvideoviewer;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.http.Header;
 
@@ -49,9 +51,20 @@ public class CoursewareContentViewer extends Activity {
 			public void run() {
 				// TODO Auto-generated method stub
 				HttpGetRequest getRequest = request;
-				String responseText = request.executeGetRequest();
+				String responseText = getRequest.executeGetRequest();
 				
 				Log.d(TAG, "Content: " + responseText);
+				
+				Pattern startTagPattern = Pattern.compile("<section[^<>]*class=\"course-index\">");
+				Matcher startTagMatcher = startTagPattern.matcher(responseText);
+				startTagMatcher.find();
+				Log.d(TAG, "Start match: " + startTagMatcher.group());
+				Log.d(TAG, "Position: " + startTagMatcher.end());
+				Pattern endTagPattern = Pattern.compile("</section>");
+				Matcher endTagMatcher = endTagPattern.matcher(responseText);
+				endTagMatcher.find(startTagMatcher.end());
+				Log.d(TAG, "End match: " + endTagMatcher.group());
+				Log.d(TAG, "Position: " + endTagMatcher.start());
 			}
 		});
 		
