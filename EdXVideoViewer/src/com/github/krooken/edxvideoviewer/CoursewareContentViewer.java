@@ -1,11 +1,16 @@
 package com.github.krooken.edxvideoviewer;
 
+import java.io.IOException;
+import java.io.StringReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.http.Header;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+import org.xmlpull.v1.XmlPullParserFactory;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -65,6 +70,37 @@ public class CoursewareContentViewer extends Activity {
 				endTagMatcher.find(startTagMatcher.end());
 				Log.d(TAG, "End match: " + endTagMatcher.group());
 				Log.d(TAG, "Position: " + endTagMatcher.start());
+				
+				String coursewareContents = responseText.substring(startTagMatcher.end(), endTagMatcher.start());
+				Log.d(TAG, coursewareContents);
+				
+				try {
+					XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
+					XmlPullParser xpp = factory.newPullParser();
+
+					xpp.setInput(new StringReader(coursewareContents));
+					while(xpp.next() != XmlPullParser.END_DOCUMENT) {
+						if(xpp.getEventType() == XmlPullParser.START_TAG) {
+							if(xpp.getName().equals("div")) {
+								if(xpp.getAttributeValue(null, "class").equals("chapter")) {
+									while(xpp.getEventType() != XmlPullParser.TEXT) {
+										xpp.next();
+									}
+									Log.d(TAG, xpp.getText());
+								}
+							}
+						}
+					}
+				} catch (XmlPullParserException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				finally {
+					
+				}
 			}
 		});
 		
