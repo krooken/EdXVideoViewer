@@ -81,19 +81,41 @@ public class CoursewareContentViewer extends Activity {
 					xpp.setInput(new StringReader(coursewareContents));
 					while(xpp.next() != XmlPullParser.END_DOCUMENT) {
 						if(xpp.getEventType() == XmlPullParser.START_TAG) {
-							if(xpp.getName().equals("div")) {
-								Log.d(TAG, xpp.getName());
-								Log.d(TAG, "" + xpp.getAttributeCount());
-								for(int i=0; i<xpp.getAttributeCount(); i++) {
+							if(xpp.getName().equals("div")) { // Find div-tag.
+								//Log.d(TAG, xpp.getName());
+								//Log.d(TAG, "" + xpp.getAttributeCount());
+								/*for(int i=0; i<xpp.getAttributeCount(); i++) {
 									Log.d(TAG, xpp.getAttributeName(i));
 									Log.d(TAG, xpp.getAttributeValue(i));
-								}
+								}*/
+								// Find the div with class attribute chapter.
 								String attributeClassValue = xpp.getAttributeValue(null, "class");
 								if(attributeClassValue != null && attributeClassValue.equals("chapter")) {
+									// Find the first non-whitespace text after the opening div-tag.
+									// This text is the chapter description text.
 									while(xpp.getEventType() != XmlPullParser.TEXT || xpp.isWhitespace()) {
 										xpp.next();
 									}
 									Log.d(TAG, xpp.getText().trim());
+									
+									// Find the ul-tag. All class info is organized in li-tags under the ul-tag.
+									// Find all li-tags in the ul-tag.
+									while(xpp.getName() == null || !xpp.getName().equals("ul")) {
+										xpp.next();
+									}
+									while( !(xpp.getEventType() == XmlPullParser.END_TAG && 
+											xpp.getName().equals("ul"))) {
+										if(xpp.getEventType() == XmlPullParser.START_TAG && 
+												xpp.getName().equals("a")) {
+											Log.d(TAG, xpp.getAttributeValue(null, "href"));
+											while(xpp.getEventType() != XmlPullParser.TEXT ||
+													xpp.isWhitespace()) {
+												xpp.next();
+											}
+											Log.d(TAG, xpp.getText());
+										}
+										xpp.next();
+									}
 								}
 							}
 						}
