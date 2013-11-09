@@ -8,7 +8,6 @@ import java.util.LinkedList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.http.Header;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
@@ -19,7 +18,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
@@ -33,8 +31,8 @@ public class CoursewareContentViewer extends Activity {
 	
 	private static final String TAG = "CoursewareContentViewer";
 	
-	private String[] sectionTexts;
-	private String[] sectionAddresses;
+	private String[] sectionTexts = new String[1];
+	private String[] sectionAddresses = new String[1];
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -158,8 +156,8 @@ public class CoursewareContentViewer extends Activity {
 					@Override
 					public void run() {
 						// TODO Auto-generated method stub
-						CoursewareContentViewer.this.sectionAddresses = (String[])finalSectionAddresses.toArray();
-						CoursewareContentViewer.this.sectionTexts = (String[])finalSectionTexts.toArray();
+						CoursewareContentViewer.this.sectionAddresses = (String[])finalSectionAddresses.toArray(CoursewareContentViewer.this.sectionAddresses);
+						CoursewareContentViewer.this.sectionTexts = (String[])finalSectionTexts.toArray(CoursewareContentViewer.this.sectionTexts);
 						
 						addSectionContents();
 					}
@@ -173,7 +171,7 @@ public class CoursewareContentViewer extends Activity {
 	private void addSectionContents() {
 		
 		for(int i=0; i<sectionTexts.length; i++) {
-			adapter.add(sectionAddresses[i]);
+			adapter.add(sectionTexts[i]);
 		}
 		
 		ListView listView = (ListView)findViewById(R.id.courses_list_view);
