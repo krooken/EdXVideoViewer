@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.LinkedList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -17,7 +18,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.Toast;
 
 public class CoursewareContentViewer extends Activity {
 
@@ -25,6 +32,9 @@ public class CoursewareContentViewer extends Activity {
 	private String cookieData;
 	
 	private static final String TAG = "CoursewareContentViewer";
+	
+	private String[] sectionTexts;
+	private String[] sectionAddresses;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +84,9 @@ public class CoursewareContentViewer extends Activity {
 				String coursewareContents = responseText.substring(startTagMatcher.end(), endTagMatcher.start());
 				Log.d(TAG, coursewareContents);
 				
+				LinkedList<String> sectionStrings = new LinkedList<String>();
+				LinkedList<String> sectionAddresses = new LinkedList<String>();
+				
 				try {
 					XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
 					XmlPullParser xpp = factory.newPullParser();
@@ -97,6 +110,8 @@ public class CoursewareContentViewer extends Activity {
 										xpp.next();
 									}
 									Log.d(TAG, xpp.getText().trim());
+									sectionStrings.add(xpp.getText());
+									sectionAddresses.add(null);
 									
 									// Find the ul-tag. All class info is organized in li-tags under the ul-tag.
 									// Find all li-tags in the ul-tag.
@@ -108,11 +123,15 @@ public class CoursewareContentViewer extends Activity {
 										if(xpp.getEventType() == XmlPullParser.START_TAG && 
 												xpp.getName().equals("a")) {
 											Log.d(TAG, xpp.getAttributeValue(null, "href"));
+											String sectionAddress = xpp.getAttributeValue(null, "href");
+											
 											while(xpp.getEventType() != XmlPullParser.TEXT ||
 													xpp.isWhitespace()) {
 												xpp.next();
 											}
 											Log.d(TAG, xpp.getText());
+											sectionAddresses.add(sectionAddress);
+											sectionStrings.add(xpp.getText() + "\n" + sectionAddress);
 										}
 										xpp.next();
 									}
@@ -130,10 +149,44 @@ public class CoursewareContentViewer extends Activity {
 				finally {
 					
 				}
+				
+				final LinkedList<String> finalSectionTexts = sectionStrings;
+				final LinkedList<String> finalSectionAddresses = sectionAddresses;
+				
+				responseHandler.post(new Runnable() {
+					
+					@Override
+					public void run() {
+						// TODO Auto-generated method stub
+						CoursewareContentViewer.this.sectionAddresses = (String[])finalSectionAddresses.toArray();
+						CoursewareContentViewer.this.sectionTexts = (String[])finalSectionTexts.toArray();
+						
+						addSectionContents();
+					}
+				});
 			}
 		});
 		
 		headerThread.start();
+	}
+	
+	private void addSectionContents() {
+		
+		for(int i=0; i<sectionTexts.length; i++) {
+			adapter.add(sectionAddresses[i]);
+		}
+		
+		ListView listView = (ListView)findViewById(R.id.courses_list_view);
+		listView.setAdapter(adapter);
+		listView.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View v, int position,
+					long id) {
+				// TODO Auto-generated method stub
+				Toast.makeText(CoursewareContentViewer.this, sectionTexts[position], Toast.LENGTH_SHORT).show();
+			}
+		});
 	}
 
 }
