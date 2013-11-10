@@ -182,7 +182,12 @@ public class CoursewareContentViewer extends Activity {
 			public void onItemClick(AdapterView<?> parent, View v, int position,
 					long id) {
 				// TODO Auto-generated method stub
-				Toast.makeText(CoursewareContentViewer.this, sectionTexts[position], Toast.LENGTH_SHORT).show();
+				// Toast.makeText(CoursewareContentViewer.this, sectionTexts[position], Toast.LENGTH_SHORT).show();
+				Log.d(TAG, "Adapter: position: " + position + " id: " + id);
+				Intent intent = new Intent(CoursewareContentViewer.this, CoursewareSectionViewer.class);
+				intent.putExtra("cookie_data", cookieData);
+				intent.putExtra("section_contents_address", sectionAddresses[position]);
+				startActivity(intent);
 			}
 		});
 	}
