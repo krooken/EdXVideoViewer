@@ -110,12 +110,14 @@ public class CoursewareSectionViewer extends Activity {
 									xpp.next();
 								}
 								Log.d(TAG, xpp.getText());
+								xpp.next();
 								String videoDescription = xpp.getText();
 								while(xpp.getEventType() != XmlPullParser.TEXT ||
 										xpp.isWhitespace()) {
 									xpp.next();
 								}
-								
+
+								Log.d(TAG, "type: " + xpp.getText());
 								if(xpp.getText().equals(", video")) {
 									videoStrings.add(videoDescription);
 									videoDataId.add(dataId);
