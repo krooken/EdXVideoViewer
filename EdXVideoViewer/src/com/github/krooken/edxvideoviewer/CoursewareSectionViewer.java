@@ -110,8 +110,8 @@ public class CoursewareSectionViewer extends Activity {
 									xpp.next();
 								}
 								Log.d(TAG, xpp.getText());
-								xpp.next();
 								String videoDescription = xpp.getText();
+								xpp.next();
 								while(xpp.getEventType() != XmlPullParser.TEXT ||
 										xpp.isWhitespace()) {
 									xpp.next();
@@ -181,6 +181,11 @@ public class CoursewareSectionViewer extends Activity {
 		
 		for(int i=0; i<videoTexts.length; i++) {
 			adapter.add(videoTexts[i]);
+			if(videoTexts[i] != null) {
+				Log.d(TAG, "videoTexts[" + i + "]: " + videoTexts[i]);
+			}else {
+				Log.d(TAG, "videoTexts[" + i + "]: null");
+			}
 		}
 		
 		ListView listView = (ListView)findViewById(R.id.courses_list_view);
