@@ -140,7 +140,7 @@ public class CoursewareSectionViewer extends Activity {
 						dataStreamsMatcher.find(videoDataIdMatcher.end());
 						Log.d(TAG, "End match: " + dataStreamsMatcher.group());
 						Log.d(TAG, "Position: " + dataStreamsMatcher.start());
-						Pattern regularSpeedPattern = Pattern.compile("1[.]00:([^,]*)");
+						Pattern regularSpeedPattern = Pattern.compile("1[.]00:([^,&]*)");
 						Matcher regularSpeedMatcher = regularSpeedPattern.matcher(responseText);
 						regularSpeedMatcher.find(dataStreamsMatcher.end());
 						videoAddresses.add(regularSpeedMatcher.group(1));
