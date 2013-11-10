@@ -15,6 +15,7 @@ import org.xmlpull.v1.XmlPullParserFactory;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -196,7 +197,9 @@ public class CoursewareSectionViewer extends Activity {
 			public void onItemClick(AdapterView<?> parent, View v, int position,
 					long id) {
 				// TODO Auto-generated method stub
-				Toast.makeText(CoursewareSectionViewer.this, videoTexts[position] + "\n" + videoAddresses[position], Toast.LENGTH_SHORT).show();
+				// Toast.makeText(CoursewareSectionViewer.this, videoTexts[position] + "\n" + videoAddresses[position], Toast.LENGTH_SHORT).show();
+				startActivity(new Intent(Intent.ACTION_VIEW, 
+						Uri.parse("http://www.youtube.com/watch?v=" + videoAddresses[position])));
 			}
 		});
 	}
