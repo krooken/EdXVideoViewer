@@ -131,19 +131,22 @@ public class CoursewareSectionViewer extends Activity {
 					Iterator<String> it = videoDataId.iterator();
 					while(it.hasNext()) {
 						String currentVideoDataId = it.next();
-						Pattern videoDataIdPattern = Pattern.compile(currentVideoDataId);
+						Pattern videoDataIdPattern = 
+								Pattern.compile("data-usage-id=&#34;" + currentVideoDataId);
 						Matcher videoDataIdMatcher = videoDataIdPattern.matcher(responseText);
 						videoDataIdMatcher.find();
-						Log.d(TAG, "Start match: " + videoDataIdMatcher.group());
+						Log.d(TAG, "Data id match: " + videoDataIdMatcher.group());
 						Log.d(TAG, "Position: " + videoDataIdMatcher.end());
 						Pattern dataStreamsPattern = Pattern.compile("data-streams=&#34;");
 						Matcher dataStreamsMatcher = dataStreamsPattern.matcher(responseText);
 						dataStreamsMatcher.find(videoDataIdMatcher.end());
-						Log.d(TAG, "End match: " + dataStreamsMatcher.group());
+						Log.d(TAG, "Data stream match: " + dataStreamsMatcher.group());
 						Log.d(TAG, "Position: " + dataStreamsMatcher.start());
 						Pattern regularSpeedPattern = Pattern.compile("1[.]00:([^,&]*)");
 						Matcher regularSpeedMatcher = regularSpeedPattern.matcher(responseText);
 						regularSpeedMatcher.find(dataStreamsMatcher.end());
+						Log.d(TAG, "Video link match: " + regularSpeedMatcher.group());
+						Log.d(TAG, "Position: " + regularSpeedMatcher.start());
 						videoAddresses.add(regularSpeedMatcher.group(1));
 					}
 					
@@ -184,8 +187,10 @@ public class CoursewareSectionViewer extends Activity {
 			adapter.add(videoTexts[i]);
 			if(videoTexts[i] != null) {
 				Log.d(TAG, "videoTexts[" + i + "]: " + videoTexts[i]);
+				Log.d(TAG, "videoAddresses[" + i + "]: " + videoAddresses[i]);
 			}else {
 				Log.d(TAG, "videoTexts[" + i + "]: null");
+				Log.d(TAG, "videoAddresses[" + i + "]: null");
 			}
 		}
 		
