@@ -26,9 +26,9 @@ public class UncaughtExceptionLogger implements UncaughtExceptionHandler {
 					logFolder + "/" + timestamp + ".stacktrace"));
 			PrintWriter printer = new PrintWriter(writer);
 			exception.printStackTrace(printer);
-			printer.close();
 			writer.flush();
 			writer.close();
+			printer.close();
 		} catch(IOException ex) {
 			ex.printStackTrace();
 		}
