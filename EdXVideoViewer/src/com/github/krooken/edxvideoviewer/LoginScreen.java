@@ -1,5 +1,7 @@
 package com.github.krooken.edxvideoviewer;
 
+import java.io.File;
+import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -40,6 +42,14 @@ public class LoginScreen extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_login_screen);
+		
+		if(!(Thread.getDefaultUncaughtExceptionHandler() instanceof UncaughtExceptionLogger)) {
+			UncaughtExceptionHandler defaultUEH = Thread.getDefaultUncaughtExceptionHandler();
+			File file = new File(getExternalFilesDir(null), "log-files");
+			file.mkdir();
+			Thread.setDefaultUncaughtExceptionHandler(
+					new UncaughtExceptionLogger(file.getAbsolutePath(), defaultUEH));
+		}
 		
 		loginWebView = (WebView)findViewById(R.id.login_web_view);
 		
