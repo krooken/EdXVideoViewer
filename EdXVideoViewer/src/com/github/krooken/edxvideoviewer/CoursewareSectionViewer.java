@@ -59,6 +59,8 @@ public class CoursewareSectionViewer extends Activity {
 
 		final Handler responseHandler = new Handler();
 		
+		final String exceptionAddress = courseAddress;
+		
 		Thread headerThread = new Thread(new Runnable() {
 
 			@Override
@@ -130,24 +132,33 @@ public class CoursewareSectionViewer extends Activity {
 
 					Iterator<String> it = videoDataId.iterator();
 					while(it.hasNext()) {
-						String currentVideoDataId = it.next();
-						Pattern videoDataIdPattern = 
-								Pattern.compile("data-usage-id=&#34;" + currentVideoDataId);
-						Matcher videoDataIdMatcher = videoDataIdPattern.matcher(responseText);
-						videoDataIdMatcher.find();
-						Log.d(TAG, "Data id match: " + videoDataIdMatcher.group());
-						Log.d(TAG, "Position: " + videoDataIdMatcher.end());
-						Pattern dataStreamsPattern = Pattern.compile("data-streams=&#34;");
-						Matcher dataStreamsMatcher = dataStreamsPattern.matcher(responseText);
-						dataStreamsMatcher.find(videoDataIdMatcher.end());
-						Log.d(TAG, "Data stream match: " + dataStreamsMatcher.group());
-						Log.d(TAG, "Position: " + dataStreamsMatcher.start());
-						Pattern regularSpeedPattern = Pattern.compile("1[.]00:([^,&]*)");
-						Matcher regularSpeedMatcher = regularSpeedPattern.matcher(responseText);
-						regularSpeedMatcher.find(dataStreamsMatcher.end());
-						Log.d(TAG, "Video link match: " + regularSpeedMatcher.group());
-						Log.d(TAG, "Position: " + regularSpeedMatcher.start());
-						videoAddresses.add(regularSpeedMatcher.group(1));
+						try {
+							String currentVideoDataId = it.next();
+							Pattern videoDataIdPattern = 
+									Pattern.compile("data-usage-id=&#34;" + currentVideoDataId);
+							Matcher videoDataIdMatcher = videoDataIdPattern.matcher(responseText);
+							videoDataIdMatcher.find();
+							Log.d(TAG, "Data id match: " + videoDataIdMatcher.group());
+							Log.d(TAG, "Position: " + videoDataIdMatcher.end());
+							Pattern dataStreamsPattern = Pattern.compile("data-streams=&#34;");
+							Matcher dataStreamsMatcher = dataStreamsPattern.matcher(responseText);
+							dataStreamsMatcher.find(videoDataIdMatcher.end());
+							Log.d(TAG, "Data stream match: " + dataStreamsMatcher.group());
+							Log.d(TAG, "Position: " + dataStreamsMatcher.start());
+							Pattern regularSpeedPattern = Pattern.compile("1[.]00:([^,&]*)");
+							Matcher regularSpeedMatcher = regularSpeedPattern.matcher(responseText);
+							regularSpeedMatcher.find(dataStreamsMatcher.end());
+							Log.d(TAG, "Video link match: " + regularSpeedMatcher.group());
+							Log.d(TAG, "Position: " + regularSpeedMatcher.start());
+							videoAddresses.add(regularSpeedMatcher.group(1));
+						}catch(IllegalStateException exception) {
+							UnexpectedHttpResponseException uhrException = 
+									new UnexpectedHttpResponseException("Data stream not found.", exception);
+							uhrException.setRequestUrl(exceptionAddress);
+							uhrException.setResponseHeader(getRequest.getResponseHeaders());
+							uhrException.setHttpResponse(getRequest.getResponseContent());
+							throw uhrException;
+						}
 					}
 					
 				} catch (XmlPullParserException e) {

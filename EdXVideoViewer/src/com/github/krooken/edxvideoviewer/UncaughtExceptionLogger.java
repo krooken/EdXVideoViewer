@@ -25,7 +25,14 @@ public class UncaughtExceptionLogger implements UncaughtExceptionHandler {
 			BufferedWriter writer = new BufferedWriter(new FileWriter(
 					logFolder + "/" + timestamp + ".stacktrace"));
 			PrintWriter printer = new PrintWriter(writer);
+			printer.append(exception.getMessage());
 			exception.printStackTrace(printer);
+			if(exception instanceof UnexpectedHttpResponseException) {
+				UnexpectedHttpResponseException uhrEx = (UnexpectedHttpResponseException)exception;
+				printer.append(uhrEx.getRequestUrl());
+				printer.append(uhrEx.getFormattedHeaders());
+				printer.append(uhrEx.getResponse());
+			}
 			writer.flush();
 			writer.close();
 			printer.close();
