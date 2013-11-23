@@ -23,7 +23,7 @@ public class UncaughtExceptionLogger implements UncaughtExceptionHandler {
 		
 		try {
 			BufferedWriter writer = new BufferedWriter(new FileWriter(
-					logFolder + "/" + timestamp + ".stacktrace"));
+					logFolder + "/" + timestamp + "-log.txt"));
 			PrintWriter printer = new PrintWriter(writer);
 			printer.append(exception.getMessage());
 			exception.printStackTrace(printer);
