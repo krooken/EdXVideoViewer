@@ -33,8 +33,8 @@ public class CoursewareSectionViewer extends Activity {
 	
 	private static final String TAG = "CoursewareSectionViewer";
 	
-	private String[] videoTexts = new String[1];
-	private String[] videoAddresses = new String[1];
+	private String[] videoTexts = new String[0];
+	private String[] videoAddresses = new String[0];
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
