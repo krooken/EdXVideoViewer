@@ -205,19 +205,25 @@ public class CoursewareSectionViewer extends Activity {
 			}
 		}
 		
+		if(videoTexts.length == 0) {
+			adapter.add("No videos found in this section");
+		}
+		
 		ListView listView = (ListView)findViewById(R.id.courses_list_view);
 		listView.setAdapter(adapter);
-		listView.setOnItemClickListener(new OnItemClickListener() {
+		
+		if(videoAddresses.length > 0) {
+			listView.setOnItemClickListener(new OnItemClickListener() {
 
-			@Override
-			public void onItemClick(AdapterView<?> parent, View v, int position,
-					long id) {
-				// TODO Auto-generated method stub
-				// Toast.makeText(CoursewareSectionViewer.this, videoTexts[position] + "\n" + videoAddresses[position], Toast.LENGTH_SHORT).show();
-				startActivity(new Intent(Intent.ACTION_VIEW, 
-						Uri.parse("http://www.youtube.com/watch?v=" + videoAddresses[position])));
-			}
-		});
+				@Override
+				public void onItemClick(AdapterView<?> parent, View v, int position,
+						long id) {
+					// Toast.makeText(CoursewareSectionViewer.this, videoTexts[position] + "\n" + videoAddresses[position], Toast.LENGTH_SHORT).show();
+					startActivity(new Intent(Intent.ACTION_VIEW, 
+							Uri.parse("http://www.youtube.com/watch?v=" + videoAddresses[position])));
+				}
+			});
+		}
 	}
 
 }
