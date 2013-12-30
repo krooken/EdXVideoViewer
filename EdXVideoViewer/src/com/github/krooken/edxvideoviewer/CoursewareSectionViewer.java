@@ -24,7 +24,6 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 
 public class CoursewareSectionViewer extends Activity {
 
@@ -135,7 +134,7 @@ public class CoursewareSectionViewer extends Activity {
 						try {
 							String currentVideoDataId = it.next();
 							Pattern videoDataIdPattern = 
-									Pattern.compile("data-usage-id=&#34;" + currentVideoDataId);
+									Pattern.compile(currentVideoDataId.replace(";_", "/"));
 							Matcher videoDataIdMatcher = videoDataIdPattern.matcher(responseText);
 							videoDataIdMatcher.find();
 							Log.d(TAG, "Data id match: " + videoDataIdMatcher.group());
