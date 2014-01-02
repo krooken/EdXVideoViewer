@@ -71,6 +71,7 @@ public class LoginScreen extends Activity {
 		Log.d(TAG, "CookieMgr before load: " + cookieMgrStr);
 		
 		loginWebView.getSettings().setJavaScriptEnabled(true);
+		loginWebView.getSettings().setLoadsImagesAutomatically(false);
 		loginWebView.loadUrl("https://courses.edx.org/login");
 		getWindow().setSoftInputMode(
 			      WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
