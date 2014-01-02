@@ -36,6 +36,8 @@ public class LoginScreen extends Activity {
 	private boolean dataAdded = false;
 
 	private boolean loggedIn = false;
+	
+	private Button continueButton;
 
 	@SuppressLint("SetJavaScriptEnabled")
 	@Override
@@ -110,6 +112,13 @@ public class LoginScreen extends Activity {
 					Log.d(TAG, edxLoggedInMatcher.group(1));
 					if(edxLoggedInMatcher.group(1).equalsIgnoreCase("true")) {
 						loggedIn = true;
+						if(continueButton != null) {
+							continueButton.setEnabled(true);
+						}
+					} else {
+						if(continueButton != null) {
+							continueButton.setEnabled(false);
+						}
 					}
 				}
 				if(sessionIdMatcher.find()) {
@@ -128,7 +137,7 @@ public class LoginScreen extends Activity {
 		
 		Button addDataToFormButton = (Button)findViewById(R.id.add_data_button);
 		Button sendDataButton = (Button)findViewById(R.id.send_data_button);
-		Button continueButton = (Button)findViewById(R.id.continue_button);
+		continueButton = (Button)findViewById(R.id.continue_button);
 		
 		addDataToFormButton.setOnClickListener(new OnClickListener() {
 			
@@ -210,8 +219,6 @@ public class LoginScreen extends Activity {
 					"(function() {" + 
 					"document.getElementById('submit').click();" +
 					"})()");
-			
-			loggedIn  = true;
 		}
 	}
 
