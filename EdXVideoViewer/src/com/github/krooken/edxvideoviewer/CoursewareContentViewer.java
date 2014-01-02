@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -18,28 +20,24 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
-import android.widget.Toast;
+import android.widget.ExpandableListView;
+import android.widget.ExpandableListView.OnChildClickListener;
+import android.widget.SimpleExpandableListAdapter;
 
 public class CoursewareContentViewer extends Activity {
 
-	private ArrayAdapter<String> adapter;
+	private SimpleExpandableListAdapter expandableAdapter;
 	private String cookieData;
 	
 	private static final String TAG = "CoursewareContentViewer";
 	
-	private String[] sectionTexts = new String[1];
-	private String[] sectionAddresses = new String[1];
+	private LinkedList<Map<String, String>> sectionGroups;
+	private LinkedList<LinkedList<Map<String, String>>> sectionChildren;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.course_viewer_screen);
-
-		adapter = new ArrayAdapter<String>(this, R.layout.course_viewer_item);
+		setContentView(R.layout.course_content_viewer_screen);
 
 		Intent intent = getIntent();
 		cookieData = intent.getCharSequenceExtra("cookie_data").toString();
@@ -62,7 +60,6 @@ public class CoursewareContentViewer extends Activity {
 
 			@Override
 			public void run() {
-				// TODO Auto-generated method stub
 				HttpGetRequest getRequest = request;
 				String responseText = getRequest.executeGetRequest();
 				
@@ -82,8 +79,10 @@ public class CoursewareContentViewer extends Activity {
 				String coursewareContents = responseText.substring(startTagMatcher.end(), endTagMatcher.start());
 				Log.d(TAG, coursewareContents);
 				
-				LinkedList<String> sectionStrings = new LinkedList<String>();
-				LinkedList<String> sectionAddresses = new LinkedList<String>();
+				LinkedList<Map<String, String>> sectionGroups = 
+						new LinkedList<Map<String, String>>();
+				LinkedList<LinkedList<Map<String, String>>> sectionChildren =
+						new LinkedList<LinkedList<Map<String, String>>>();
 				
 				try {
 					XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
@@ -108,8 +107,12 @@ public class CoursewareContentViewer extends Activity {
 										xpp.next();
 									}
 									Log.d(TAG, xpp.getText().trim());
-									sectionStrings.add(xpp.getText());
-									sectionAddresses.add(null);
+									
+									HashMap<String, String> groupMap = new HashMap<String, String>();
+									groupMap.put("text", xpp.getText());
+									
+									LinkedList<Map<String, String>> childrenList = 
+											new LinkedList<Map<String, String>>();
 									
 									// Find the ul-tag. All class info is organized in li-tags under the ul-tag.
 									// Find all li-tags in the ul-tag.
@@ -128,11 +131,20 @@ public class CoursewareContentViewer extends Activity {
 												xpp.next();
 											}
 											Log.d(TAG, xpp.getText());
-											sectionAddresses.add(sectionAddress);
-											sectionStrings.add(xpp.getText() + "\n" + sectionAddress);
+											
+											HashMap<String, String> childrenMap = 
+													new HashMap<String, String>();
+											
+											childrenMap.put("text", xpp.getText() + "\n" + sectionAddress);
+											childrenMap.put("address", sectionAddress);
+											
+											childrenList.add(childrenMap);
 										}
 										xpp.next();
 									}
+									
+									sectionGroups.add(groupMap);
+									sectionChildren.add(childrenList);
 								}
 							}
 						}
@@ -148,16 +160,16 @@ public class CoursewareContentViewer extends Activity {
 					
 				}
 				
-				final LinkedList<String> finalSectionTexts = sectionStrings;
-				final LinkedList<String> finalSectionAddresses = sectionAddresses;
+				final LinkedList<Map<String, String>> sectionGroupsTemp = sectionGroups;
+				final LinkedList<LinkedList<Map<String, String>>> sectionChildrenTemp = sectionChildren;
 				
 				responseHandler.post(new Runnable() {
 					
 					@Override
 					public void run() {
-						// TODO Auto-generated method stub
-						CoursewareContentViewer.this.sectionAddresses = (String[])finalSectionAddresses.toArray(CoursewareContentViewer.this.sectionAddresses);
-						CoursewareContentViewer.this.sectionTexts = (String[])finalSectionTexts.toArray(CoursewareContentViewer.this.sectionTexts);
+						
+						CoursewareContentViewer.this.sectionGroups = sectionGroupsTemp;
+						CoursewareContentViewer.this.sectionChildren = sectionChildrenTemp;
 						
 						addSectionContents();
 					}
@@ -170,26 +182,33 @@ public class CoursewareContentViewer extends Activity {
 	
 	private void addSectionContents() {
 		
-		for(int i=0; i<sectionTexts.length; i++) {
-			adapter.add(sectionTexts[i]);
-		}
+		String[] groupFrom = {"text"};
+		int groupLayout = R.layout.course_viewer_item;
+		int[] groupTo = {R.id.course_viewer_item_text};
+		String[] childFrom = groupFrom;
+		int childLayout = groupLayout;
+		int[] childTo = groupTo;
+		expandableAdapter = new SimpleExpandableListAdapter(this, sectionGroups, groupLayout, groupFrom, groupTo, sectionChildren, childLayout, childFrom, childTo);
 		
-		ListView listView = (ListView)findViewById(R.id.courses_list_view);
-		listView.setAdapter(adapter);
-		listView.setOnItemClickListener(new OnItemClickListener() {
-
+		ExpandableListView listView = (ExpandableListView)findViewById(R.id.content_list_view);
+		listView.setAdapter(expandableAdapter);
+		listView.setOnChildClickListener(new OnChildClickListener() {
+			
 			@Override
-			public void onItemClick(AdapterView<?> parent, View v, int position,
-					long id) {
-				// TODO Auto-generated method stub
-				// Toast.makeText(CoursewareContentViewer.this, sectionTexts[position], Toast.LENGTH_SHORT).show();
-				Log.d(TAG, "Adapter: position: " + position + " id: " + id);
-				if(sectionAddresses[position] != null) {
+			public boolean onChildClick(ExpandableListView parent, View v,
+					int groupPosition, int childPosition, long id) {
+				
+				Log.d(TAG, "Adapter: group position: " + groupPosition + 
+						"child position: " + childPosition + " id: " + id);
+				if(sectionChildren.get(groupPosition).get(childPosition) != null) {
 					Intent intent = new Intent(CoursewareContentViewer.this, CoursewareSectionViewer.class);
 					intent.putExtra("cookie_data", cookieData);
-					intent.putExtra("section_contents_address", sectionAddresses[position]);
+					intent.putExtra("section_contents_address", 
+							sectionChildren.get(groupPosition).get(childPosition).get("address"));
 					startActivity(intent);
 				}
+				
+				return true;
 			}
 		});
 	}
