@@ -9,13 +9,18 @@ import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.net.URI;
+import java.util.LinkedList;
 
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
 
 import android.util.Log;
 
@@ -26,23 +31,50 @@ public class HttpGetRequest {
 	private String cookieHeader = "";
 	private Header[] responseHeaders;
 	private String responseContent;
+	private LinkedList<BasicNameValuePair> postData = 
+			new LinkedList<BasicNameValuePair>();
+	private String referer = "";
+	private String xCsrfToken = "";
 
 	public HttpGetRequest(URI uri) {
 		getRequestUri = uri;
 	}
 	
-	
 	public void addCookieHeader(String cookieString) {
-		cookieHeader = cookieString;
+		cookieHeader += cookieString;
 	}
 	
-	public String executeGetRequest() {
+	public void addPostData(String name, String value) {
+		postData.add(new BasicNameValuePair(name, value));
+	}
+	
+	public void setReferer(String referer) {
+		this.referer = referer;
+	}
+	
+	public void setXCsrfToken(String csrfToken) {
+		this.xCsrfToken = csrfToken;
+	}
+	
+	private String executeRequest(String method) {
 		Log.d(TAG, "Requesting " + getRequestUri.toString());
 		
 		HttpResponse response = null;
 		try {        
 			HttpClient client = new DefaultHttpClient();
-			HttpGet request = new HttpGet();
+			HttpRequestBase request;
+			if(method.trim().equalsIgnoreCase("post")) {
+				UrlEncodedFormEntity entity = new UrlEncodedFormEntity(postData);
+				HttpPost postRequest = new HttpPost();
+				postRequest.setEntity(entity);
+				postRequest.addHeader("Referer", referer);
+				postRequest.addHeader("X-CSRFToken", xCsrfToken);
+				postRequest.addHeader("Content-Type", "application/x-www-form-urlencoded");
+				request = postRequest;
+			} else {
+				// Method get is default.
+				request = new HttpGet();
+			}
 			request.setURI(getRequestUri);
 			request.addHeader("Cookie", cookieHeader);
 			response = client.execute(request);
@@ -113,6 +145,10 @@ public class HttpGetRequest {
 		}
 		
 		return responseContent;
+	}
+	
+	public String executeGetRequest() {
+		return executeRequest("GET");
 	}
 	
 	public Header[] getResponseHeaders() {
