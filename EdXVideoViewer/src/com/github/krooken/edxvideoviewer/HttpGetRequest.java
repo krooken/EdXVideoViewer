@@ -87,6 +87,10 @@ public class HttpGetRequest {
 		}
 
 		if(response != null) {
+			
+			Log.d(TAG, "Status code: " + response.getStatusLine().getStatusCode()
+					+ " " + response.getStatusLine().getReasonPhrase());
+			
 			responseHeaders = response.getAllHeaders();
 			for(int i=0; i<responseHeaders.length; i++) {
 				Log.d(TAG, "Header name: " + responseHeaders[i].getName() + 

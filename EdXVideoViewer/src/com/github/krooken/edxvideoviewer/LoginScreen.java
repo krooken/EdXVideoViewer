@@ -156,6 +156,7 @@ public class LoginScreen extends Activity {
 						Matcher matcher = pattern.matcher(cookieString);
 						if(matcher.find()) {
 							csrfToken = matcher.group(1);
+							Log.d(TAG, "csrftoken: " + csrfToken);
 						}
 					}
 				}
@@ -171,12 +172,12 @@ public class LoginScreen extends Activity {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				loginRequest.addCookieHeader(csrfToken);
+				loginRequest.addCookieHeader("csrftoken=" + csrfToken);
 				loginRequest.setReferer(
 						"https://courses.edx.org/accounts/login?next=/dashboard");
 				loginRequest.setXCsrfToken(csrfToken);
 				loginRequest.addPostData("email", "email@gmail.com");
-				loginRequest.addPostData("pasword", "password");
+				loginRequest.addPostData("password", "password");
 				loginRequest.executePostRequest();
 				
 				headers = loginRequest.getResponseHeaders();
