@@ -151,6 +151,10 @@ public class HttpGetRequest {
 		return executeRequest("GET");
 	}
 	
+	public String executePostRequest() {
+		return executeRequest("POST");
+	}
+	
 	public Header[] getResponseHeaders() {
 		return responseHeaders;
 	}
