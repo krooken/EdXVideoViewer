@@ -2,8 +2,12 @@ package com.github.krooken.edxvideoviewer;
 
 import java.io.File;
 import java.lang.Thread.UncaughtExceptionHandler;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.apache.http.Header;
 
 import android.os.Bundle;
 import android.annotation.SuppressLint;
@@ -125,6 +129,84 @@ public class LoginScreen extends Activity {
 			}
 			
 		});
+		
+		Thread thread = new Thread(new Runnable(){
+
+			@Override
+			public void run() {
+				HttpGetRequest httpRequest = null;
+				try {
+					httpRequest = new HttpGetRequest(new URI(
+							"https://courses.edx.org/accounts/login?next=/dashboard"));
+				} catch (URISyntaxException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				httpRequest.executeGetRequest();
+				Header[] headers = httpRequest.getResponseHeaders();
+				
+				String csrfToken = null;
+				
+				for(int i=0; i<headers.length; i++) {
+					Log.d(TAG, "Header " + i + ": " + headers[i].getName() + " value: " + headers[i].getValue());
+					
+					if(headers[i].getName().equals("Set-Cookie")) {
+						String cookieString = headers[i].getValue();
+						Pattern pattern = Pattern.compile("csrftoken=([^;]+);");
+						Matcher matcher = pattern.matcher(cookieString);
+						if(matcher.find()) {
+							csrfToken = matcher.group(1);
+						}
+					}
+				}
+				
+				if(csrfToken == null) {
+					return;
+				}
+				
+				HttpGetRequest loginRequest = null;
+				try {
+					loginRequest = new HttpGetRequest(new URI("https://courses.edx.org/login_ajax"));
+				} catch (URISyntaxException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				loginRequest.addCookieHeader(csrfToken);
+				loginRequest.setReferer(
+						"https://courses.edx.org/accounts/login?next=/dashboard");
+				loginRequest.setXCsrfToken(csrfToken);
+				loginRequest.addPostData("email", "email@gmail.com");
+				loginRequest.addPostData("pasword", "password");
+				loginRequest.executePostRequest();
+				
+				headers = loginRequest.getResponseHeaders();
+				String sessioncookie = null;
+				String edxloggedincookie = null;
+				
+				for(int i=0; i<headers.length; i++) {
+					Log.d(TAG, "Header " + i + ": " + headers[i].getName() + " value: " + headers[i].getValue());
+					
+					if(headers[i].getName().equals("Set-Cookie")) {
+						String cookieString = headers[i].getValue();
+						Pattern edxLoggedInPattern = Pattern.compile("edxloggedin=([^;]+);");
+						Pattern sessionIdPattern = Pattern.compile("sessionid=([^;]+);");
+						Matcher edxLoggedInMatcher = edxLoggedInPattern.matcher(cookieString);
+						Matcher sessionIdMatcher = sessionIdPattern.matcher(cookieString);
+						
+						if(edxLoggedInMatcher.find()) {
+							edxloggedincookie = edxLoggedInMatcher.group(1);
+							Log.d(TAG, "EdxLoggedInCookie: " + edxloggedincookie);
+						}
+						if(sessionIdMatcher.find()) {
+							sessioncookie = sessionIdMatcher.group(1);
+							Log.d(TAG, "SessionIdCookie: " + sessioncookie);
+						}
+					}
+				}
+			}
+			
+		});
+		thread.start();
 		
 		Button addDataToFormButton = (Button)findViewById(R.id.add_data_button);
 		Button sendDataButton = (Button)findViewById(R.id.send_data_button);
