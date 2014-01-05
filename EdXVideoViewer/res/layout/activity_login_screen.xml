@@ -50,5 +50,15 @@
         android:text="Error message"
         android:visibility="gone"
         />
-
+    
+    <ProgressBar 
+        android:id="@+id/login_in_progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/login_button"
+        android:layout_centerInParent="true"
+        android:visibility="gone"
+        android:indeterminateOnly="true"
+        />
+    
 </RelativeLayout>

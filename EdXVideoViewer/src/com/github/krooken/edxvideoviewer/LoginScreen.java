@@ -20,6 +20,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 public class LoginScreen extends Activity {
@@ -182,6 +183,7 @@ public class LoginScreen extends Activity {
 		loginInProgress = true;
 		((Button)findViewById(R.id.login_button)).setEnabled(false);
 		((TextView)findViewById(R.id.login_error_message_text)).setVisibility(View.GONE);
+		((ProgressBar)findViewById(R.id.login_in_progress_bar)).setVisibility(View.VISIBLE);
 		thread.start();
 	}
 	
@@ -196,13 +198,14 @@ public class LoginScreen extends Activity {
 	private void loginFailed(String errorMessage) {
 		TextView errorMessageView = (TextView)findViewById(R.id.login_error_message_text);
 		errorMessageView.setText(errorMessage);
-		((TextView)findViewById(R.id.login_error_message_text)).setVisibility(View.VISIBLE);
 		loginProgressStop();
+		((TextView)findViewById(R.id.login_error_message_text)).setVisibility(View.VISIBLE);
 	}
 	
 	private void loginProgressStop() {
 		loginInProgress = false;
 		((Button)findViewById(R.id.login_button)).setEnabled(true);
+		((ProgressBar)findViewById(R.id.login_in_progress_bar)).setVisibility(View.GONE);
 	}
 
 }
