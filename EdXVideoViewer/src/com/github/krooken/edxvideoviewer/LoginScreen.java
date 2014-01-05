@@ -138,17 +138,17 @@ public class LoginScreen extends Activity {
 					
 					if(headers[i].getName().equals("Set-Cookie")) {
 						String cookieString = headers[i].getValue();
-						Pattern edxLoggedInPattern = Pattern.compile("edxloggedin=([^;]+);");
-						Pattern sessionIdPattern = Pattern.compile("sessionid=([^;]+);");
+						Pattern edxLoggedInPattern = Pattern.compile("edxloggedin=[^;]+;");
+						Pattern sessionIdPattern = Pattern.compile("sessionid=[^;]+;");
 						Matcher edxLoggedInMatcher = edxLoggedInPattern.matcher(cookieString);
 						Matcher sessionIdMatcher = sessionIdPattern.matcher(cookieString);
 						
 						if(edxLoggedInMatcher.find()) {
-							edxloggedincookie = edxLoggedInMatcher.group(1);
+							edxloggedincookie = edxLoggedInMatcher.group(0);
 							Log.d(TAG, "EdxLoggedInCookie: " + edxloggedincookie);
 						}
 						if(sessionIdMatcher.find()) {
-							sessioncookie = sessionIdMatcher.group(1);
+							sessioncookie = sessionIdMatcher.group(0);
 							Log.d(TAG, "SessionIdCookie: " + sessioncookie);
 						}
 					}
@@ -156,7 +156,7 @@ public class LoginScreen extends Activity {
 				
 				if(sessioncookie != null 
 						&& edxloggedincookie != null 
-						&& edxloggedincookie.equalsIgnoreCase("true")) {
+						&& edxloggedincookie.equalsIgnoreCase("edxloggedin=true;")) {
 					
 					final String session = sessioncookie;
 					final String edxloggedin = edxloggedincookie;
@@ -184,8 +184,7 @@ public class LoginScreen extends Activity {
 	}
 	
 	private void loginSuccessful(String sessionId, String edxLoggedIn) {
-		String cookieString = "sessionid=" + sessionId + ";" + 
-				"edxloggedin=" + edxLoggedIn + ";";
+		String cookieString = sessionId + edxLoggedIn;
 		Intent intent = new Intent(LoginScreen.this, CourseViewer.class);
 		intent.putExtra("cookie_data", cookieString);
 		startActivity(intent);
