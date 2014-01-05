@@ -180,6 +180,8 @@ public class LoginScreen extends Activity {
 		});
 		
 		loginInProgress = true;
+		((Button)findViewById(R.id.login_button)).setEnabled(false);
+		((TextView)findViewById(R.id.login_error_message_text)).setVisibility(View.GONE);
 		thread.start();
 	}
 	
@@ -188,13 +190,19 @@ public class LoginScreen extends Activity {
 		Intent intent = new Intent(LoginScreen.this, CourseViewer.class);
 		intent.putExtra("cookie_data", cookieString);
 		startActivity(intent);
-		loginInProgress = false;
+		loginProgressStop();
 	}
 	
 	private void loginFailed(String errorMessage) {
 		TextView errorMessageView = (TextView)findViewById(R.id.login_error_message_text);
 		errorMessageView.setText(errorMessage);
+		((TextView)findViewById(R.id.login_error_message_text)).setVisibility(View.VISIBLE);
+		loginProgressStop();
+	}
+	
+	private void loginProgressStop() {
 		loginInProgress = false;
+		((Button)findViewById(R.id.login_button)).setEnabled(true);
 	}
 
 }

@@ -48,6 +48,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/login_button"
         android:text="Error message"
+        android:visibility="gone"
         />
 
 </RelativeLayout>
