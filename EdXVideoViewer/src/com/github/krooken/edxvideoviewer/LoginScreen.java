@@ -10,6 +10,7 @@ import java.util.regex.Pattern;
 import org.apache.http.Header;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
@@ -24,6 +25,7 @@ import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.TextView;
 
 public class LoginScreen extends Activity {
 	
@@ -40,6 +42,9 @@ public class LoginScreen extends Activity {
 	private boolean dataAdded = false;
 
 	private boolean loggedIn = false;
+	
+	private final Handler handler = new Handler();
+	private boolean loginInProgress = false;
 
 	@SuppressLint("SetJavaScriptEnabled")
 	@Override
@@ -130,6 +135,64 @@ public class LoginScreen extends Activity {
 			
 		});
 		
+		Button addDataToFormButton = (Button)findViewById(R.id.add_data_button);
+		Button sendDataButton = (Button)findViewById(R.id.send_data_button);
+		Button continueButton = (Button)findViewById(R.id.continue_button);
+		
+		addDataToFormButton.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				userName = ((EditText)findViewById(R.id.username_field)).getText().toString();
+				password = ((EditText)findViewById(R.id.password_field)).getText().toString();
+				remember = ((CheckBox)findViewById(R.id.remember_field)).isChecked();
+				
+				userDetailsSubmitted = true;
+				tryAddDataToForm();
+			}
+		});
+		
+		sendDataButton.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				String username = ((EditText)findViewById(R.id.username_field)).getText().toString();
+				String password = ((EditText)findViewById(R.id.password_field)).getText().toString();
+				tryLogin(username, password, remember);
+			}
+		});
+		
+		continueButton.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				//TODO: Start new activity
+				if(loggedIn) {
+					Intent intent = new Intent(LoginScreen.this, CourseViewer.class);
+					intent.putExtra("cookie_data", cookieData);
+					startActivity(intent);
+				}
+			}
+		});
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.login_screen, menu);
+		return true;
+	}
+	
+	private boolean isLoginReady() {
+		return userDetailsSubmitted && pageHasLoaded;
+	}
+	
+	private void tryLogin(String username, String password, boolean remember) {
+
+		final String postUsername = username;
+		final String postPassword = password;
+		final boolean postRemember = remember;
+		
 		Thread thread = new Thread(new Runnable(){
 
 			@Override
@@ -162,6 +225,13 @@ public class LoginScreen extends Activity {
 				}
 				
 				if(csrfToken == null) {
+					handler.post(new Runnable() {
+						
+						@Override
+						public void run() {
+							loginFailed("Cannot send login information");
+						}
+					});
 					return;
 				}
 				
@@ -176,8 +246,11 @@ public class LoginScreen extends Activity {
 				loginRequest.setReferer(
 						"https://courses.edx.org/accounts/login?next=/dashboard");
 				loginRequest.setXCsrfToken(csrfToken);
-				loginRequest.addPostData("email", "email@gmail.com");
-				loginRequest.addPostData("password", "password");
+				loginRequest.addPostData("email", postUsername);
+				loginRequest.addPostData("password", postPassword);
+				if(postRemember) {
+					loginRequest.addPostData("remember", "true");
+				}
 				loginRequest.executePostRequest();
 				
 				headers = loginRequest.getResponseHeaders();
@@ -204,71 +277,34 @@ public class LoginScreen extends Activity {
 						}
 					}
 				}
-			}
-			
-		});
-		thread.start();
-		
-		Button addDataToFormButton = (Button)findViewById(R.id.add_data_button);
-		Button sendDataButton = (Button)findViewById(R.id.send_data_button);
-		Button continueButton = (Button)findViewById(R.id.continue_button);
-		
-		addDataToFormButton.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				userName = ((EditText)findViewById(R.id.username_field)).getText().toString();
-				password = ((EditText)findViewById(R.id.password_field)).getText().toString();
-				remember = ((CheckBox)findViewById(R.id.remember_field)).isChecked();
 				
-				userDetailsSubmitted = true;
-				tryAddDataToForm();
-			}
-		});
-		
-		sendDataButton.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				tryLoginFromPrefilledForm();
-			}
-		});
-		
-		continueButton.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				//TODO: Start new activity
-				if(loggedIn) {
-					Intent intent = new Intent(LoginScreen.this, CourseViewer.class);
-					intent.putExtra("cookie_data", cookieData);
-					startActivity(intent);
+				if(sessioncookie != null 
+						&& edxloggedincookie != null 
+						&& edxloggedincookie.equalsIgnoreCase("true")) {
+					
+					final String session = sessioncookie;
+					final String edxloggedin = edxloggedincookie;
+					
+					handler.post(new Runnable() {
+						public void run() {
+							loginSuccessful(session, edxloggedin);
+						}
+					});
+				} else {
+					handler.post(new Runnable() {
+						
+						@Override
+						public void run() {
+							loginFailed("Username or password is incorrect!");
+						}
+					});
 				}
 			}
+			
 		});
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.login_screen, menu);
-		return true;
-	}
-	
-	private boolean isLoginReady() {
-		return userDetailsSubmitted && pageHasLoaded;
-	}
-	
-	private void tryLogin() {
-		if(isLoginReady()) {
-			loginWebView.loadUrl("javascript:" + 
-					"(function() {" +
-					"document.getElementById('email').value = '" + userName + "';" +
-					"document.getElementById('password').value = '" + password + "';" +
-					"document.getElementById('remember-yes').checked = " + (remember ? "'true'" : "''") + ";" +
-					"document.getElementById('submit').click();" + 
-					"})()");
-		}
+		
+		loginInProgress = true;
+		thread.start();
 	}
 	
 	private void tryAddDataToForm() {
@@ -296,6 +332,21 @@ public class LoginScreen extends Activity {
 			
 			loggedIn  = true;
 		}
+	}
+	
+	private void loginSuccessful(String sessionId, String edxLoggedIn) {
+		String cookieString = "sessionid=" + sessionId + ";" + 
+				"edxloggedin=" + edxLoggedIn + ";";
+		Intent intent = new Intent(LoginScreen.this, CourseViewer.class);
+		intent.putExtra("cookie_data", cookieString);
+		startActivity(intent);
+		loginInProgress = false;
+	}
+	
+	private void loginFailed(String errorMessage) {
+		TextView errorMessageView = (TextView)findViewById(R.id.login_error_message_text);
+		errorMessageView.setText(errorMessage);
+		loginInProgress = false;
 	}
 
 }

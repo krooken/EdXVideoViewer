@@ -65,10 +65,18 @@
     
     </LinearLayout>
     
+    <TextView 
+        android:id="@+id/login_error_message_text"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/button_container"
+        android:text="Error message"
+        />    
     <WebView
         android:id="@+id/login_web_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/button_container" />
+        android:layout_below="@id/button_container"
+        android:visibility="gone" />
 
 </RelativeLayout>
