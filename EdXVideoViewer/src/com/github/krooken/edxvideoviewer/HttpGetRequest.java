@@ -35,6 +35,7 @@ public class HttpGetRequest {
 			new LinkedList<BasicNameValuePair>();
 	private String referer = "";
 	private String xCsrfToken = "";
+	private int statusCode = -1;
 
 	public HttpGetRequest(URI uri) {
 		getRequestUri = uri;
@@ -90,6 +91,7 @@ public class HttpGetRequest {
 			
 			Log.d(TAG, "Status code: " + response.getStatusLine().getStatusCode()
 					+ " " + response.getStatusLine().getReasonPhrase());
+			statusCode = response.getStatusLine().getStatusCode();
 			
 			responseHeaders = response.getAllHeaders();
 			for(int i=0; i<responseHeaders.length; i++) {
@@ -165,5 +167,9 @@ public class HttpGetRequest {
 	
 	public String getResponseContent() {
 		return responseContent;
+	}
+	
+	public int getStatusCode() {
+		return statusCode;
 	}
 }
