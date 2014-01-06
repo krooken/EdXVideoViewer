@@ -47,6 +47,26 @@ public class LoginScreen extends Activity {
 					new UncaughtExceptionLogger(file.getAbsolutePath(), defaultUEH));
 		}
 		
+		Button loginButton = (Button)findViewById(R.id.login_button);
+		
+		loginButton.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				if(!loginInProgress) {
+					String username = ((EditText)findViewById(R.id.username_field)).getText().toString();
+					String password = ((EditText)findViewById(R.id.password_field)).getText().toString();
+					boolean remember = ((CheckBox)findViewById(R.id.remember_field)).isChecked();
+					tryLogin(username, password, remember);
+				}
+			}
+		});
+	}
+
+	@Override
+	protected void onStart() {
+		super.onStart();
+		
 		Thread alreadyLoggedInThread = new Thread(new Runnable() {
 			
 			@Override
@@ -100,21 +120,6 @@ public class LoginScreen extends Activity {
 			}
 		});
 		alreadyLoggedInThread.start();
-		
-		Button loginButton = (Button)findViewById(R.id.login_button);
-		
-		loginButton.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				if(!loginInProgress) {
-					String username = ((EditText)findViewById(R.id.username_field)).getText().toString();
-					String password = ((EditText)findViewById(R.id.password_field)).getText().toString();
-					boolean remember = ((CheckBox)findViewById(R.id.remember_field)).isChecked();
-					tryLogin(username, password, remember);
-				}
-			}
-		});
 	}
 
 	@Override
