@@ -1,15 +1,14 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     tools:context=".LoginScreen" >
 
     <ProgressBar
         android:id="@+id/already_logged_in_progress_bar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
+        android:layout_centerInParent="true"
         android:indeterminateOnly="true"
         android:visibility="visible" />
 
@@ -32,29 +31,29 @@
             android:paddingLeft="10dip"
             android:paddingRight="10dip" />
 
+        <CheckBox
+            android:id="@+id/remember_field"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/username_field" />
+
         <EditText
             android:id="@+id/password_field"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/username_field"
+            android:layout_toLeftOf="@id/remember_field"
             android:hint="Password"
             android:inputType="textPassword"
             android:paddingLeft="10dip"
             android:paddingRight="10dip" />
-
-        <CheckBox
-            android:id="@+id/remember_field"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_below="@id/password_field" />
 
         <Button
             android:id="@+id/login_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/password_field"
-            android:layout_toRightOf="@id/remember_field"
             android:text="Login" />
 
         <TextView
@@ -71,8 +70,9 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/login_button"
             android:layout_centerInParent="true"
+            android:layout_marginTop="10dip"
             android:indeterminateOnly="true"
             android:visibility="gone" />
     </RelativeLayout>
 
-</LinearLayout>
+</RelativeLayout>
