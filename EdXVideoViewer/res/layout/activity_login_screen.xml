@@ -2,74 +2,77 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".LoginScreen" >
 
-    <EditText
-        android:id="@+id/username_field"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingLeft="10dip"
-        android:paddingRight="10dip"
-        android:inputType="textEmailAddress"
-        android:hint="Username" />
-    
-    <EditText
-        android:id="@+id/password_field"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingLeft="10dip"
-        android:paddingRight="10dip"
-        android:inputType="textPassword"
-        android:hint="Password"
-        android:layout_below="@id/username_field" />
-    
-    <CheckBox 
-        android:id="@+id/remember_field"
+    <ProgressBar
+        android:id="@+id/already_logged_in_progress_bar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/password_field"
-        android:layout_alignParentLeft="true" />
-    
-    <Button
-        android:id="@+id/add_data_button"
-        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:indeterminateOnly="true"
+        android:visibility="visible" />
+
+    <RelativeLayout
+        android:id="@+id/login_form_container"
         android:layout_width="match_parent"
-        android:layout_toRightOf="@id/remember_field"
-        android:layout_below="@id/password_field"
-        android:text="Add data" />
-    
-    <LinearLayout
-        android:id="@+id/button_container"
-        android:layout_below="@id/add_data_button"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:orientation="horizontal" >
-        
-        <Button
-            android:id="@+id/send_data_button"
+        android:layout_height="match_parent"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:visibility="gone" >
+
+        <EditText
+            android:id="@+id/username_field"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Username"
+            android:inputType="textEmailAddress"
+            android:paddingLeft="10dip"
+            android:paddingRight="10dip" />
+
+        <CheckBox
+            android:id="@+id/remember_field"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Send data" />
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/username_field" />
+
+        <EditText
+            android:id="@+id/password_field"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/username_field"
+            android:layout_toLeftOf="@id/remember_field"
+            android:hint="Password"
+            android:inputType="textPassword"
+            android:paddingLeft="10dip"
+            android:paddingRight="10dip" />
 
         <Button
-            android:id="@+id/continue_button"
+            android:id="@+id/login_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/password_field"
+            android:text="Login" />
+
+        <TextView
+            android:id="@+id/login_error_message_text"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/login_button"
+            android:text="Error message"
+            android:visibility="gone" />
+
+        <ProgressBar
+            android:id="@+id/login_in_progress_bar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Continue"
-            android:enabled="false" />
-    
-    </LinearLayout>
-    
-    <WebView
-        android:id="@+id/login_web_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/button_container" />
+            android:layout_below="@id/login_button"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="10dip"
+            android:indeterminateOnly="true"
+            android:visibility="gone" />
+    </RelativeLayout>
 
 </RelativeLayout>
