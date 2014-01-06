@@ -11,6 +11,7 @@ import org.apache.http.Header;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -72,7 +73,7 @@ public class LoginScreen extends Activity {
 			@Override
 			public void run() {
 				
-				SharedPreferences prefs = getPreferences(Context.MODE_PRIVATE);
+				SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 				String sessionId = prefs.getString("session_cookie", null);
 				String edxLoggedIn = prefs.getString("edxloggedin_cookie", null);
 				
@@ -251,7 +252,7 @@ public class LoginScreen extends Activity {
 	}
 	
 	private void loginSuccessful(String sessionId, String edxLoggedIn) {
-		SharedPreferences.Editor prefsEditor = getPreferences(Context.MODE_PRIVATE).edit();
+		SharedPreferences.Editor prefsEditor = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit();
 		prefsEditor.putString("session_cookie", sessionId);
 		prefsEditor.putString("edxloggedin_cookie", edxLoggedIn);
 		prefsEditor.commit();

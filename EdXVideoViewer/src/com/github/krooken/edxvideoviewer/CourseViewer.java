@@ -7,10 +7,15 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -91,6 +96,32 @@ public class CourseViewer extends Activity {
 		});
 		
 		getRequestThread.start();
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+
+		super.onCreateOptionsMenu(menu);
+		menu.add("Log off");
+		
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// TODO Auto-generated method stub
+		
+		if(item.getTitle().equals("Log off")) {
+			SharedPreferences.Editor prefsEditor = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit();
+			prefsEditor.putString("session_cookie", null);
+			prefsEditor.putString("edxloggedin_cookie", null);
+			prefsEditor.commit();
+			Intent i = new Intent(this, LoginScreen.class);
+			startActivity(i);
+			return true;
+		} else {
+			return super.onOptionsItemSelected(item);
+		}
 	}
 	
 }
