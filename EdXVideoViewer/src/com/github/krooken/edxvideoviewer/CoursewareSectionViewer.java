@@ -134,7 +134,7 @@ public class CoursewareSectionViewer extends Activity {
 						try {
 							String currentVideoDataId = it.next();
 							Pattern videoDataIdPattern = 
-									Pattern.compile(currentVideoDataId.replace(";_", "/"));
+									Pattern.compile(currentVideoDataId.replace("/", ";_"));
 							Matcher videoDataIdMatcher = videoDataIdPattern.matcher(responseText);
 							videoDataIdMatcher.find();
 							Log.d(TAG, "Data id match: " + videoDataIdMatcher.group());
