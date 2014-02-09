@@ -92,7 +92,7 @@ public class CoursewareSectionViewer extends Activity {
 					XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
 					XmlPullParser xpp = factory.newPullParser();
 
-					xpp.setInput(new StringReader(sectionContents));
+					xpp.setInput(new StringReader(sectionContents.replaceAll("&", "&amp;")));
 					while(xpp.next() != XmlPullParser.END_DOCUMENT) {
 						if(xpp.getEventType() == XmlPullParser.START_TAG) {
 							if(xpp.getName().equals("li")) { // Find li-tag.{

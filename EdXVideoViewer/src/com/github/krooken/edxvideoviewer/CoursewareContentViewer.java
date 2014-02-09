@@ -88,7 +88,7 @@ public class CoursewareContentViewer extends Activity {
 					XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
 					XmlPullParser xpp = factory.newPullParser();
 
-					xpp.setInput(new StringReader(coursewareContents));
+					xpp.setInput(new StringReader(coursewareContents.replaceAll("&", "&amp;")));
 					while(xpp.next() != XmlPullParser.END_DOCUMENT) {
 						if(xpp.getEventType() == XmlPullParser.START_TAG) {
 							if(xpp.getName().equals("div")) { // Find div-tag.
