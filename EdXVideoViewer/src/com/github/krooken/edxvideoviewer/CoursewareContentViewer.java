@@ -76,13 +76,21 @@ public class CoursewareContentViewer extends Activity {
 				Pattern bothTagPattern = Pattern.compile("<(/)?" + tagName + "[^<>]*>");
 				Matcher bothTagMatcher = bothTagPattern.matcher(responseText);
 				
-				Pattern endTagPattern = Pattern.compile("</section>");
-				Matcher endTagMatcher = endTagPattern.matcher(responseText);
-				endTagMatcher.find(startTagMatcher.end());
-				Log.d(TAG, "End match: " + endTagMatcher.group());
-				Log.d(TAG, "Position: " + endTagMatcher.start());
+				bothTagMatcher.region(startTagMatcher.start(), responseText.length());
+				int depth = 0;
+				do {
+					bothTagMatcher.find();
+					if(bothTagMatcher.group(1) == null) {
+						depth += 1;
+					} else {
+						depth -= 1;
+					}
+				}while(depth != 0);
 				
-				String coursewareContents = responseText.substring(startTagMatcher.end(), endTagMatcher.start());
+				Log.d(TAG, "End match: " + bothTagMatcher.group());
+				Log.d(TAG, "Position: " + bothTagMatcher.start());
+				
+				String coursewareContents = responseText.substring(startTagMatcher.end(), bothTagMatcher.start());
 				Log.d(TAG, coursewareContents);
 				
 				LinkedList<Map<String, String>> sectionGroups = 
