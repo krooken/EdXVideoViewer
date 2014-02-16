@@ -65,11 +65,17 @@ public class CoursewareContentViewer extends Activity {
 				
 				Log.d(TAG, "Content: " + responseText);
 				
-				Pattern startTagPattern = Pattern.compile("<div[^<>]*class=\"course-index\">");
+				Pattern startTagPattern = Pattern.compile("<([a-z]+)[^<>]*class=\"course-index\">");
 				Matcher startTagMatcher = startTagPattern.matcher(responseText);
 				startTagMatcher.find();
 				Log.d(TAG, "Start match: " + startTagMatcher.group());
 				Log.d(TAG, "Position: " + startTagMatcher.end());
+				
+				Log.d(TAG,  "Tag name: " + startTagMatcher.group(1));
+				String tagName = startTagMatcher.group(1);
+				Pattern bothTagPattern = Pattern.compile("<(/)?" + tagName + "[^<>]*>");
+				Matcher bothTagMatcher = bothTagPattern.matcher(responseText);
+				
 				Pattern endTagPattern = Pattern.compile("</section>");
 				Matcher endTagMatcher = endTagPattern.matcher(responseText);
 				endTagMatcher.find(startTagMatcher.end());
