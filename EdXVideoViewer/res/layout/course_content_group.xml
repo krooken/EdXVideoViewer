@@ -7,6 +7,8 @@
     android:paddingRight="0dp"
     android:paddingTop="0dp"
     android:paddingBottom="0dp"
-    android:text="Hello World!" >
+    android:text="Hello World!"
+    android:textStyle="normal"
+    android:textSize="14sp" >
 
 </TextView>
