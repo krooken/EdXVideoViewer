@@ -107,22 +107,21 @@ public class CoursewareSectionViewer extends Activity {
 								String dataId = xpp.getAttributeValue(null, "data-id");
 								Log.d(TAG, "data-id: " + dataId);
 								
-								while(xpp.getEventType() != XmlPullParser.TEXT ||
-										xpp.isWhitespace()) {
-									xpp.next();
-								}
-								Log.d(TAG, xpp.getText());
-								String videoDescription = xpp.getText();
-								xpp.next();
-								while(xpp.getEventType() != XmlPullParser.TEXT ||
-										xpp.isWhitespace()) {
-									xpp.next();
-								}
-
-								Log.d(TAG, "type: " + xpp.getText());
-								if(xpp.getText().equals(", video")) {
-									videoStrings.add(videoDescription);
-									videoDataId.add(dataId);
+								// Get the title for this video.
+								String videoDescription = xpp.getAttributeValue(null, "data-page-title");
+								Log.d(TAG, "title: " + videoDescription);
+								
+								// Get all class names as a space separated string
+								String aClassAttributesString = xpp.getAttributeValue(null, "class");
+								Log.d(TAG, "class: " + aClassAttributesString);
+								String[] aClassAttributes = aClassAttributesString.split(" ");
+								// Search the class attributes for seq_video.
+								// This is our indicator of a video segment.
+								for(int i=0; i<aClassAttributes.length; i++) {
+									if(aClassAttributes[i].equals("seq_video")) {
+										videoStrings.add(videoDescription);
+										videoDataId.add(dataId);
+									}
 								}
 							}
 
