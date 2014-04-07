@@ -71,7 +71,7 @@ public class CourseViewer extends Activity {
 						while(matcher.find()) {
 							Log.d(TAG, matcher.group(1));
 							Log.d(TAG,  matcher.group(2));
-							adapter.add(matcher.group(2) + "\n" + matcher.group(1));
+							adapter.add(matcher.group(2));
 							courseAddresses.add(matcher.group(1));
 						}
 						ListView listView = (ListView)findViewById(R.id.courses_list_view);

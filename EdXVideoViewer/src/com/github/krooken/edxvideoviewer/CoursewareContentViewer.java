@@ -149,7 +149,7 @@ public class CoursewareContentViewer extends Activity {
 											HashMap<String, String> childrenMap = 
 													new HashMap<String, String>();
 											
-											childrenMap.put("text", xpp.getText() + "\n" + sectionAddress);
+											childrenMap.put("text", xpp.getText());
 											childrenMap.put("address", sectionAddress);
 											
 											childrenList.add(childrenMap);
