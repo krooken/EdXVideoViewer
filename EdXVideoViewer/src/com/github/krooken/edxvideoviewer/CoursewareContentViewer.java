@@ -149,7 +149,7 @@ public class CoursewareContentViewer extends Activity {
 											HashMap<String, String> childrenMap = 
 													new HashMap<String, String>();
 											
-											childrenMap.put("text", xpp.getText() + "\n" + sectionAddress);
+											childrenMap.put("text", xpp.getText());
 											childrenMap.put("address", sectionAddress);
 											
 											childrenList.add(childrenMap);
@@ -197,11 +197,11 @@ public class CoursewareContentViewer extends Activity {
 	private void addSectionContents() {
 		
 		String[] groupFrom = {"text"};
-		int groupLayout = R.layout.course_viewer_item;
-		int[] groupTo = {R.id.course_viewer_item_text};
+		int groupLayout = R.layout.course_content_group;
+		int[] groupTo = {R.id.course_content_group_text};
 		String[] childFrom = groupFrom;
-		int childLayout = groupLayout;
-		int[] childTo = groupTo;
+		int childLayout = R.layout.course_viewer_item;
+		int[] childTo = {R.id.course_viewer_item_text};
 		expandableAdapter = new SimpleExpandableListAdapter(this, sectionGroups, groupLayout, groupFrom, groupTo, sectionChildren, childLayout, childFrom, childTo);
 		
 		ExpandableListView listView = (ExpandableListView)findViewById(R.id.content_list_view);
